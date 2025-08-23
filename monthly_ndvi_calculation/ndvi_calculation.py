@@ -90,26 +90,11 @@ def mask_clouds(dataset):
     
     return masked_dataset
 
-def save_ndvi_tiff(ndvi_array, bounds, output_path, crs='EPSG:4326'):
+def save_ndvi_tiff(ndvi_array, output_path):
     """
     Save NDVI array as a GeoTIFF file.
     """
-    height, width = ndvi_array.shape
-    transform = from_bounds(bounds[0], bounds[1], bounds[2], bounds[3], width, height)
-    
-    with rasterio.open(
-        output_path,
-        'w',
-        driver='GTiff',
-        height=height,
-        width=width,
-        count=1,
-        dtype=ndvi_array.dtype,
-        crs=crs,
-        transform=transform,
-    ) as dst:
-        dst.write(ndvi_array, 1)
-    
+    ndvi_array.odc.write_cog(output_path, overwrite=True)
     logger.info(f"NDVI saved to {output_path}")
 
 def save_ndvi_plot(ndvi_array, output_path):
